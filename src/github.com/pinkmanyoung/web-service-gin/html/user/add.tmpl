@@ -1,0 +1,17 @@
+{{define "user/add.tmpl"}}
+<html>
+	<head>
+		<title>{{.title}}</title>
+	</head>
+	<body>
+		<h1>
+			{{ .body}}
+		</h1>
+		<form method="post" action="/user/save?id=1&page=1">
+			<p>name:<input type="text" name="name" /></p>
+			<p>message:<input type="text" name="message" /></p>
+			<input type="submit" value="Submit" />
+		</form>
+	</body>
+</html>
+{{end}}
