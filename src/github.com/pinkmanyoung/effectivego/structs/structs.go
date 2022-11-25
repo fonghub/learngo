@@ -10,13 +10,13 @@ type Persons struct {
 	Nickname string
 }
 
-// 普通方式访问结构体字段
+// Value 普通方式访问结构体字段
 func Value() vertex {
 	v := vertex{2, 2}
 	return v
 }
 
-// 指针方式访问结构体字段
+// Point 指针方式访问结构体字段
 func Point() *vertex {
 	v := &vertex{3, 4}
 	return v
