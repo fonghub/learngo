@@ -1,6 +1,6 @@
 package main
 
-import "github.com/pinkmanyoung/effectivego/interfaces"
+import "github.com/pinkmanyoung/effectivego/structs"
 
 func main() {
 	//var res any
@@ -38,6 +38,7 @@ func main() {
 	//fmt.Println(res)
 	//ss := structs.Construct("Tom", 23, "ST")
 	//fmt.Println(ss)
+	structs.FourYear()
 	//-------------structs----------
 
 	//-------------array----------
@@ -85,7 +86,7 @@ func main() {
 	//interfaces.Test5()
 	//interfaces.Test6()
 	//interfaces.Exercise()
-	interfaces.Stringer()
+	//interfaces.Stringer()
 
 	//-------------interfaces----------
 }
