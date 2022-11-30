@@ -1,6 +1,8 @@
 package main
 
-import "github.com/pinkmanyoung/effectivego/generics"
+import (
+	"github.com/pinkmanyoung/effectivego/chans"
+)
 
 func main() {
 	//var res any
@@ -95,7 +97,15 @@ func main() {
 	//-------------types----------
 
 	//-------------generics----------
-	generics.NonGeneric()
+	//generics.NonGeneric()
 
 	//-------------generics----------
+
+	//-------------goroutines----------
+	//goroutines.CallSay()
+	//-------------goroutines----------
+
+	//-------------channel----------
+	chans.Call()
+	//-------------channel----------
 }
