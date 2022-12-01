@@ -3,6 +3,7 @@ package goroutines
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -129,6 +130,48 @@ func syncmaps() {
 	})
 }
 
+type vals struct {
+	x int
+	y int
+}
+
+// 加减法生成工具
+func makeHomeWrok(num int, max int) {
+	var sm sync.Map
+	for i := 0; i < num; i++ {
+		wg.Add(1)
+		go func() {
+			x := rand.Intn(max)
+			y := rand.Intn(max)
+			res := x + y
+			sm.Store(vals{x, y}, res)
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	var ii = 1
+	sm.Range(func(key, value any) bool {
+		if ii%4 != 0 {
+			fmt.Printf("%v+%v=\t\t", key.(vals).x, key.(vals).y)
+		} else {
+			fmt.Printf("%v+%v=\n", key.(vals).x, key.(vals).y)
+		}
+		ii++
+		return true
+	})
+	fmt.Println("-------------")
+	ii = 1
+	sm.Range(func(key, value any) bool {
+		if ii%4 != 0 {
+			fmt.Printf("%v-%v=\t\t", key.(vals).x+key.(vals).y, key.(vals).y)
+		} else {
+			fmt.Printf("%v-%v=\n", key.(vals).x+key.(vals).y, key.(vals).y)
+		}
+		ii++
+		return true
+	})
+}
+
 func CallSay() {
 	//协程序，协程是一种用户态的轻量级线程
 	//go test1("world")
@@ -149,5 +192,6 @@ func CallSay() {
 
 	//协程中的map并发不安全
 	//maps()
-	syncmaps()
+	//syncmaps()
+	makeHomeWrok(100, 20)
 }
