@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -22,19 +23,21 @@ func test2(str string) {
 
 var wg sync.WaitGroup
 
-func waitG() {
+func waitGp() {
 	for i := 0; i < 10; i++ {
 		//增加协程数
 		wg.Add(1)
-		go log.Println(i)
-		//减少协程数
-		wg.Done()
+		go func(i int) {
+			log.Println(i)
+			//减少协程数，wg.Done()方法需要在协程函数内执行
+			wg.Done()
+		}(i)
 	}
 	//等待，直到协程数为0
 	wg.Wait()
 }
 
-var remain = 5
+var remain int64
 
 // 不使用锁秒杀
 func seckill() {
@@ -43,11 +46,14 @@ func seckill() {
 		log.Println("已售罄")
 		return
 	}
-	time.Sleep(time.Nanosecond)
+	//暂停1毫秒，模拟程序运行
+	//程序执行时间越长，并发越不安全
+	time.Sleep(time.Microsecond)
 	remain--
 	log.Println("购买成功")
 }
 
+// 排他锁
 var mu sync.Mutex
 
 // 使用锁秒杀
@@ -61,9 +67,66 @@ func seckillwithlock() {
 		log.Println("已售罄")
 		return
 	}
-	time.Sleep(time.Nanosecond)
+	time.Sleep(time.Microsecond)
 	remain--
 	log.Println("购买成功")
+}
+
+// 使用原子操作秒杀
+func seckillwithatomic() {
+	defer wg.Done()
+	res := atomic.AddInt64(&remain, -1)
+	if res < 0 {
+		log.Println("已售罄")
+		return
+	}
+	time.Sleep(time.Microsecond)
+	log.Println("购买成功")
+}
+
+// 并发环境下，加锁、不加锁和原子操作的区别
+func callseckill() {
+	remain = 5
+	num := 10
+	for i := 0; i < num; i++ {
+		wg.Add(1)
+		//go seckill()
+		//go seckillwithlock()
+		go seckillwithatomic()
+	}
+	wg.Wait()
+	log.Println(remain)
+}
+
+// 协程中的map会出现并发读错误和并发写错误
+func maps() {
+	m := make(map[int]int)
+	for i := 0; i < 2; i++ {
+		wg.Add(1)
+		go func(i int) {
+			m[i] = i
+			wg.Done()
+		}(i)
+	}
+	wg.Wait()
+	fmt.Println(m)
+}
+
+// 使用sync.map实现map的并发读和并发写
+func syncmaps() {
+	var sm sync.Map
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+		go func(i int) {
+			sm.Store(i, i)
+			wg.Done()
+		}(i)
+	}
+	wg.Wait()
+	sm.Range(func(key, value any) bool {
+		fmt.Println(key, value)
+		return true
+	})
 }
 
 func CallSay() {
@@ -79,17 +142,12 @@ func CallSay() {
 	//go log.Println("goroutine end")
 
 	//使用waitgroup可以保证协程全部执行
-	//waitG()
-	//time.Sleep(time.Second)
+	//waitGp()
 
-	//并发不安全，会出现脏读数据
-	//使用锁可以保证并发安全
-	//for i := 0; i < 10; i++ {
-	//	wg.Add(1)
-	//	//go seckill()
-	//	go seckillwithlock()
-	//}
-	//wg.Wait()
-	//log.Println(remain)
+	//并发不安全，会出现脏读数据；使用锁可以保证并发安全
+	//callseckill()
 
+	//协程中的map并发不安全
+	//maps()
+	syncmaps()
 }

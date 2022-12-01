@@ -1,6 +1,7 @@
 package chans
 
 import (
+	"fmt"
 	"log"
 	"time"
 )
@@ -35,6 +36,7 @@ func seckillwithchan() {
 
 var ch2 = make(chan int)
 
+// 消息通信--客户端
 func clientSelect() {
 	for {
 		num := <-ch
@@ -50,6 +52,7 @@ func clientSelect() {
 	}
 }
 
+// 消息通信--服务端
 func serveSelect() {
 
 	go clientSelect()
@@ -68,14 +71,48 @@ func serveSelect() {
 
 }
 
-func test() {
+// 超时处理机制
+func timeout() {
+	done := make(chan bool)
+	//把阻塞代码放在主程序
+	checkoutTimeout(done, 3)
 	go func() {
-		_, ok := <-ch
-		if ok {
-		}
+		time.Sleep(time.Second * 5)
+		done <- true
 	}()
-	ch <- 1
-	return
+}
+
+// 检测是否超时
+func checkoutTimeout(ch chan bool, num time.Duration) {
+	select {
+	case <-ch:
+		fmt.Println("done")
+	case <-time.After(time.Second * num):
+		fmt.Println("timeout")
+	}
+}
+
+// 定时任务
+func timer() {
+	//每秒执行
+	t1 := time.Tick(time.Minute)
+	//每3秒执行
+	t3 := time.Tick(time.Minute * 3)
+	//每5秒执行
+	t5 := time.Tick(time.Minute * 5)
+	for {
+		select {
+		case <-t1:
+			time.Sleep(time.Second)
+			log.Println("sec scheduler")
+		case <-t3:
+			time.Sleep(time.Second)
+			log.Println("3 sec scheduler")
+		case <-t5:
+			time.Sleep(time.Second)
+			log.Println("5 sec scheduler")
+		}
+	}
 }
 
 func Call() {
@@ -83,7 +120,7 @@ func Call() {
 	//seckillwithchan()
 
 	//select用于监听多个channel的读写操作
-	serveSelect()
-
-	//test()
+	//serveSelect()
+	//timeout()
+	//timer()
 }

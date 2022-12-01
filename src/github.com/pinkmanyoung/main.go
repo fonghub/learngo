@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/pinkmanyoung/effectivego/chans"
+	"github.com/pinkmanyoung/effectivego/goroutines"
 )
 
 func main() {
@@ -102,10 +102,10 @@ func main() {
 	//-------------generics----------
 
 	//-------------goroutines----------
-	//goroutines.CallSay()
+	goroutines.CallSay()
 	//-------------goroutines----------
 
 	//-------------channel----------
-	chans.Call()
+	//chans.Call()
 	//-------------channel----------
 }

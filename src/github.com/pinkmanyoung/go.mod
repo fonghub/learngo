@@ -4,7 +4,7 @@ go 1.19
 
 replace github.com/pinkmanyoung/effectivego/iftest => ./effectivego/iftest
 
-require github.com/pinkmanyoung/effectivego/chans v0.0.0-00010101000000-000000000000
+require github.com/pinkmanyoung/effectivego/goroutines v0.0.0-00010101000000-000000000000
 
 replace github.com/pinkmanyoung/effectivego/fortest => ./effectivego/fortest
 
