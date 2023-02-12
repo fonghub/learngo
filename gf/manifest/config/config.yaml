@@ -1,0 +1,26 @@
+server:
+  address:     ":8000"
+  openapiPath: "/api.json"
+  swaggerPath: "/swagger"
+
+#日志
+logger:
+  level : "all"
+  stdout: true
+
+#数据库
+database:
+  default:
+    link : "root:qweasd123@tcp(127.0.0.1:3306)/test"
+    type : "mysql"
+#生成代码
+gfcli:
+  gen:
+    dao:
+      link   : "mysql:root:qweasd123@tcp(127.0.0.1:3306)/test"
+      group  : "test"
+      prefix : ""
+      tables : ""
+
+
+
