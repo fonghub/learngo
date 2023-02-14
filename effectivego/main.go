@@ -1,12 +1,6 @@
 package main
 
-<<<<<<< HEAD:effectivego/main.go
-import "effectivego/structs"
-=======
-import (
-	"github.com/pinkmanyoung/effectivego/goroutines"
-)
->>>>>>> 81864d022d39af93b2212a0323ab61c70aa3d6db:src/github.com/pinkmanyoung/main.go
+import "effectivego/functions"
 
 func main() {
 	//var res any
@@ -68,10 +62,11 @@ func main() {
 	//s := "Fields splits the string s around each instance of one or more consecutive white space characters, as defined by unicode.IsSpace, returning an array of substrings of s or an empty list if s contains only white space."
 	//res := maps.MapExercise(s)
 	//fmt.Println(res)
+	//maps.MapSearch()
 	//-------------map----------
 
 	//-------------function----------
-	//functions.FunctionCall()
+	functions.FunctionCall()
 	//-------------function----------
 
 	//-------------methods----------
@@ -106,7 +101,7 @@ func main() {
 	//-------------generics----------
 
 	//-------------goroutines----------
-	goroutines.CallSay()
+	//goroutines.CallSay()
 	//-------------goroutines----------
 
 	//-------------channel----------

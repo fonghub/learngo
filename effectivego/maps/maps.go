@@ -3,6 +3,7 @@ package maps
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 type vertex struct {
@@ -65,4 +66,19 @@ func MapExercise(s string) map[string]int {
 		m[v]++
 	}
 	return m
+}
+
+// MapSearch 遍历map，输出顺序不确定
+func MapSearch() {
+	var m = map[string]string{
+		"game_id":     "17",
+		"create_by":   "22",
+		"game_name":   "slot",
+		"status":      "1",
+		"create_time": time.Now().String(),
+	}
+	fmt.Println("m", m)
+	for k, v := range m {
+		fmt.Printf("k=%s,v=%s\n", k, v)
+	}
 }
