@@ -1,12 +1,6 @@
 package main
 
-<<<<<<< HEAD:effectivego/main.go
-import "effectivego/structs"
-=======
-import (
-	"github.com/pinkmanyoung/effectivego/goroutines"
-)
->>>>>>> 81864d022d39af93b2212a0323ab61c70aa3d6db:src/github.com/pinkmanyoung/main.go
+import "effectivego/goroutines"
 
 func main() {
 	//var res any
