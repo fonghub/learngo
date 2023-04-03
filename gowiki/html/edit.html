@@ -1,6 +1,8 @@
-<h1>Editing {{.Title}}</h1>
+<h1>Editing {{.title}}</h1>
 
-<form action="/save/{{.Title}}" method="POST">
-<div><textarea name="body" rows="20" cols="80">{{printf "%s" .Body}}</textarea></div>
+<form action="/save/{{.title}}" method="POST">
+<div>name:<input name="name" value='{{printf "%s" .name}}'></div>
+<div>author:<input name="author" value='{{printf "%s" .author}}'></div>
+<div>price:<input name="price" value='{{printf "%s" .price}}'></div>
 <div><input type="submit" value="Save"></div>
 </form>

@@ -1,5 +1,7 @@
-<h1>{{.Title}}</h1>
+<h1>{{.title}}</h1>
 
-<p>[<a href="/edit/{{.Title}}">edit</a>]</p>
+<p>[<a href="/edit/{{.title}}">edit</a>]</p>
 
-<div>{{printf "%s" .Body}}</div>
+<div>name:{{printf "%s" .name}}</div>
+<div>author:{{printf "%s" .author}}</div>
+<div>price:{{printf "%s" .price}}</div>
