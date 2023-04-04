@@ -1,36 +1,26 @@
 package internal
 
-import "fmt"
-
-func Q() {
-	var i = []int{2, 5, 6, 3, 9, 0, 7, 1}
-	fmt.Println(i)
-
-	S(i, 0, len(i)-1)
-	fmt.Println(i)
-
-}
-
-// S 快速排序
-func S(is []int, left, right int) {
+// QuickSort 快速排序，根据 field 字段对map数组倒序排序
+func QuickSort(m []map[string]string, left, right int, field string) {
 	i := left
 	j := right
 
 	if left >= right {
 		return
 	}
-	tmp := is[i]
+
+	tmp := m[i]
 	for i < j {
-		for i < j && is[j] >= tmp {
+		for i < j && m[j][field] <= tmp[field] {
 			j--
 		}
-		is[i] = is[j]
-		for i < j && is[i] <= tmp {
+		m[i] = m[j]
+		for i < j && m[i][field] > tmp[field] {
 			i++
 		}
-		is[j] = is[i]
+		m[j] = m[i]
 	}
-	is[i] = tmp
-	S(is, left, i-1)
-	S(is, i+1, right)
+	m[i] = tmp
+	QuickSort(m, left, i-1, field)
+	QuickSort(m, i+1, right, field)
 }
