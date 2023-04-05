@@ -1,12 +1,20 @@
 package main
 
 import (
-	"fmt"
 	"reflection/internal"
 )
 
 func main() {
-	fmt.Println("reflection")
+	testBegin()
+	//testThreeLaws()
+}
 
-	internal.Func0()
+func testBegin() {
+	internal.Demo1()
+}
+func testThreeLaws() {
+	//internal.FirstLaw()
+	//internal.SecondLaw()
+	//internal.ThirdLaw()
+	internal.ReadAndWriteStruct()
 }
