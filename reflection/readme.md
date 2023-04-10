@@ -17,3 +17,8 @@ Value	reflect.Value	reflect.ValueOf
 - 反射可以将“接口类型变量”转换为“反射类型对象”
 - 反射可以将“反射类型对象”转换为“接口类型变量”
 - 如果要修改“反射类型对象”其值必须是“可写的”
+
+
+
+
+https://medium.com/capital-one-tech/learning-to-use-go-reflection-822a0aed74b7

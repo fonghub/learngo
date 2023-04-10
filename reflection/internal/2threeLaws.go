@@ -41,13 +41,13 @@ func ThirdLaw() {
 	val := reflect.ValueOf(x)
 	fmt.Println("settability of val:", val.CanSet()) //settability of val: false
 	// 执行以下语句，会报错，因为 val 变量不可写
+	//val.SetFloat(3.55) // panic: reflect: reflect.Value.SetFloat using unaddressable value
 	// 如果这行代码能够成功执行，它不会更新 val，
 	// 虽然看起来变量 val 是根据 x 创建的，相反它会更新 x 存在于反射对象 val 内部的一个拷贝，
 	// 而变量 x 本身完全不受影响。
 	// 这会造成迷惑，并且没有任何意义，所以是不合法的。“可写性”就是为了避免这个问题而设计的。
-	//val.SetFloat(3.55) // panic: reflect: reflect.Value.SetFloat using unaddressable value
 
-	//反射指针变量，获取指针只想的数据
+	//反射指针变量，获取指针指向的数据
 	val2 := reflect.ValueOf(&x).Elem()
 	fmt.Println("settability of val2:", val2.CanSet()) //settability of val2: true
 	//通过反射修改变量的值
