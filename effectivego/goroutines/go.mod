@@ -1,3 +1,3 @@
-module github.com/pinkmanyoung/effectivego/goroutines
+module effectivego/goroutines
 
 go 1.19
