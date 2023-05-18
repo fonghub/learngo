@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"context"
 	"database/sql/driver"
 	"fmt"
 	"github.com/ClickHouse/clickhouse-go"
@@ -24,23 +25,37 @@ func (c *ch) Init() error {
 	if c.conn == nil {
 		c.mu.Lock()
 		defer c.mu.Unlock()
+		fmt.Println("========== open clickhouse conn ==========")
 		conn, err := clickhouse.Open(dsn)
 		if err != nil {
 			return err
 		}
 		c.conn = conn
 	}
+	err := c.conn.(driver.Pinger).Ping(context.Background())
+	if err != nil {
+		fmt.Println("ping error ", err)
+		fmt.Println("========== reconnect clickhouse ==========")
+		//重连
+		c.conn.Close()
+		c.conn = nil
+		c.Init()
+	}
 	return nil
 }
 
 // Insert 插入
+// 仅支持批处理插入模式，需要使用begin/commit
 func (c *ch) Insert(sql string, args map[int][]driver.Value) error {
 	tx, err := c.conn.Begin()
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 	stmt, err := c.conn.Prepare(sql)
+	//defer stmt.Close()
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 	for _, value := range args {
@@ -49,6 +64,7 @@ func (c *ch) Insert(sql string, args map[int][]driver.Value) error {
 		}
 	}
 	if err = tx.Commit(); err != nil {
+		tx.Rollback()
 		return err
 	}
 	return nil
@@ -58,16 +74,21 @@ func (c *ch) Insert(sql string, args map[int][]driver.Value) error {
 func (c *ch) Update(sql string, args []driver.Value) error {
 	tx, err := c.conn.Begin()
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 	stmt, err := c.conn.Prepare(sql)
+	defer stmt.Close()
 	if err != nil {
+		//tx.Rollback()
 		return err
 	}
 	if _, err = stmt.Exec(args); err != nil {
+		//tx.Rollback()
 		return err
 	}
 	if err = tx.Commit(); err != nil {
+		tx.Rollback()
 		return err
 	}
 	return nil
@@ -75,19 +96,17 @@ func (c *ch) Update(sql string, args []driver.Value) error {
 
 // DoExec 建表 删表 更新（不带参数） 删除
 func (c *ch) DoExec(sql string) error {
-	tx, err := c.conn.Begin()
-	if err != nil {
-		return err
-	}
 	stmt, err := c.conn.Prepare(sql)
+	defer stmt.Close()
 	if err != nil {
+		//tx.Rollback()
 		return err
 	}
 	if _, err = stmt.Exec([]driver.Value{}); err != nil {
 		return err
 	}
-	err = tx.Commit()
 	if err != nil {
+		//tx.Rollback()
 		return err
 	}
 	return nil
@@ -95,17 +114,16 @@ func (c *ch) DoExec(sql string) error {
 
 // DoQuery 查询
 func (c *ch) DoQuery(fieldSql string, tableName string, tailSql string) ([]g.MapStrStr, error) {
-	tx, err := c.conn.Begin()
-	if err != nil {
-		return nil, err
-	}
 	stmt, err := c.conn.Prepare(fmt.Sprintf("select %s from %s where %s", fieldSql, tableName, tailSql))
+	defer stmt.Close()
 	if err != nil {
+		//tx.Rollback()
 		return nil, err
 	}
 	rows, err := stmt.Query([]driver.Value{})
 	defer rows.Close()
 	if err != nil {
+		//tx.Rollback()
 		return nil, err
 	}
 	columns := rows.Columns()
@@ -117,10 +135,6 @@ func (c *ch) DoQuery(fieldSql string, tableName string, tailSql string) ([]g.Map
 			ro[c] = gconv.String(row[i])
 		}
 		ros = append(ros, ro)
-	}
-
-	if err = tx.Commit(); err != nil {
-		return nil, err
 	}
 	return ros, nil
 }
